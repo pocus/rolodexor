@@ -21,7 +21,7 @@ class Rolodex
 		#or @contacts[-1] (returns last value in array)
 	end
 
-	def find_contact(id) #remember id is not the array index
+	def contact_object(id) #remember id is not the array index
 
 		@contacts.each do |c| #for each array element (e.g.: contact1, contact2 ...)
 			return c if c.id == id #explicit return (stops search after finding.) returns the whole empty array if emptys
@@ -35,15 +35,12 @@ class Rolodex
 		@contacts.each do |c|
 			puts "#{c.id} \t#{c.name} \t#{c.age} \t#{c.email}"
 		end
-
-
 	end
 
 	def modify_contact
 		list_contacts
 
-		puts "\nEnter id of contact to be changed"
-		id = gets.chomp.to_i
+		id = acquire_id
 
 		puts "\nWhat do you want to change?"
 		contact_attribute = gets.chomp
@@ -52,24 +49,63 @@ class Rolodex
 
 		when "name"
 			puts "\nNew name?"
-			find_contact(id).name = gets.chomp
+			contact_object(id).name = gets.chomp
 
 		when "age"
 			puts "\nNew age?"
-			find_contact(id).age = gets.chomp.to_i
+			contact_object(id).age = gets.chomp.to_i
 
 		when "email"
 			puts "\nNew email?"
-			find_contact(id).email = gets.chomp
+			contact_object(id).email = gets.chomp
 		end
 
 		list_contacts
 	end
 
+	def acquire_id
+		puts "\nEnter id of contact to be modified or deleted"
+		id = gets.chomp.to_i
+	end
 
+	def contact_index(id)
+			counter = 0
+			@contacts.each do |c| #for each array element (e.g.: contact1, contact2 ...)
+
+				if c.id == id
+					return counter
+				end
+				counter += 1
+			end
+
+			counter
+	end
+
+	def acquire_contact
+
+		puts "Name?"
+		name = gets.chomp
+		puts "Age?"
+		age = gets.chomp.to_i
+		puts "Email?"
+		email = gets.chomp
+
+		new_contact(name,age,email)
+
+	end
+
+	def delete_contact
+		list_contacts
+		id = acquire_id
+		contact_object(id)
+
+		@contacts.delete_at(contact_index(id))
+		@contacts.compact
+		list_contacts
+
+	end
 
 end
-
 
 class Contact
 
@@ -87,24 +123,15 @@ class Contact
 
 end
 
+
 rolo = Rolodex.new
-
-david = rolo.new_contact("David", 30, "dvd.yip@gmail.com")
-jen = rolo.new_contact("Jen", 35, "jenifle@hotmail.com")
-cait = rolo.new_contact("Cait", 25, "cait@cait.com")
-
-rolo.modify_contact
-
-
-
-
-
-
-
-
-
-
-
+david = rolo.new_contact("dave", 40, "dvd.yip@")
+rolo.acquire_contact
+rolo.acquire_contact
+rolo.acquire_contact
+rolo.list_contacts
+#rolo.modify_contact
+rolo.delete_contact
 
 	# #reader
 	# def name
