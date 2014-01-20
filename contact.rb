@@ -31,9 +31,9 @@ class Rolodex
 
 	def list_contacts
 		puts "Contacts currently stored"
-		puts "id \tname \tage \temail"
+		puts "id \tname \t\tage \temail"
 		@contacts.each do |c|
-			puts "#{c.id} \t#{c.name} \t#{c.age} \t#{c.email}"
+			puts "#{c.id} \t#{c.name} \t\t#{c.age} \t#{c.email}"
 		end
 	end
 
@@ -41,8 +41,8 @@ class Rolodex
 		list_contacts
 
 		id = acquire_id
-
-		puts "\nWhat do you want to change?"
+		puts "\n** CHANGE CONTACT **"
+		puts "\nWhat do you want to change? (name / age / email)"
 		contact_attribute = gets.chomp
 
 		case contact_attribute
@@ -60,11 +60,12 @@ class Rolodex
 			contact_object(id).email = gets.chomp
 		end
 
+		puts "\n** Contact changed - RESULT **"
 		list_contacts
 	end
 
 	def acquire_id
-		puts "\nEnter id of contact to be modified or deleted"
+		puts "\nEnter contact id:"
 		id = gets.chomp.to_i
 	end
 
@@ -95,16 +96,42 @@ class Rolodex
 	end
 
 	def delete_contact
+		puts "\n** DELETE CONTACT **"
 		list_contacts
+
 		id = acquire_id
 		contact_object(id)
 
 		@contacts.delete_at(contact_index(id))
 		@contacts.compact
+
+		puts "\n** Contact deleted - RESULT **"
 		list_contacts
 
 	end
 
+	def search_contacts
+
+		result_ary = []
+
+
+		puts "Search term?"
+		term = gets.chomp
+
+		@contacts.each do |c|
+			if (c.name.scan(term).empty? == false || c.email.scan(term).empty? == false || c.age.to_s.scan(term).empty? == false)
+				result_ary << c
+			end
+		end
+
+		puts "For search term '#{term}' the following records were found:"
+		puts "id \tname \t\tage \temail"
+
+		result_ary.each do |r|
+		puts "#{r.id} \t#{r.name} \t\t#{r.age} \t#{r.email}"
+
+		end
+	end
 end
 
 class Contact
@@ -123,15 +150,17 @@ class Contact
 
 end
 
-
+puts "\e[H\e[2J"
 rolo = Rolodex.new
-david = rolo.new_contact("dave", 40, "dvd.yip@")
+
 rolo.acquire_contact
 rolo.acquire_contact
 rolo.acquire_contact
 rolo.list_contacts
 #rolo.modify_contact
-rolo.delete_contact
+rolo.search_contacts
+
+#rolo.delete_contact
 
 	# #reader
 	# def name
